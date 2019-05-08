@@ -13,5 +13,6 @@ $resp = curl_exec($curl);
 curl_close($curl);
     return $resp;
 }
-var_dump(httpGet('https://api.github.com/search/repositories?q=tetris+in:tetris'));
+header("Accept: application/vnd.github.mercy-preview+json");
+echo httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q'].'+in:'.$_REQUEST['q'].'');
 ?>

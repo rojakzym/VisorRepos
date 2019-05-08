@@ -20,10 +20,11 @@
     super();
     this.state = {
       busquedaGit: null,
-      persons: []
+      repos : [],
+      Addhtml : null
     };
     
-    this.publish = this.publish.bind(this);
+    this.buscar = this.buscar.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
   
@@ -32,34 +33,44 @@
       [target.name]: target.value
     });
   }
-  componentDidMount() {
-    axios.get(`https://jsonplaceholder.typicode.com/users`)
-      .then(res => {
-        const persons = res.data;
-        this.setState({ persons });
-      })
-  }
 
-  publish() {
+  buscar() {
     console.log( this.state.busquedaGit );
+    axios.get('backend.php', {
+    params: {
+      q: this.state.busquedaGit
+    }
+  })
+      .then(res => {
+        const repos = res.data;
+        this.setState({ repos });
+        let table  = [];
+        let repos_table = repos.map(repo  => '<tr><td>'+repo.id+'</td><td>'+repo.name+'</td></tr>');
+        console.log(repos_table);
+//table.push(`<table><tr>`);
+//              let content = this.state.repos.map(repo  => '<td>'+repo.id+'</td><td>'+repo.name+'</td>');
+  //            table.push(content);
+//table.push(`<tr></table>`);
+            //this.setState({
+             // Addhtml: table.join("")
+    //});
+      })
   }
   
   render() {
-    return <div>
-    <ul>
-        { this.state.persons.map(person => <li>{person.name}</li>)}
-      </ul>
+     return <div>
 
       <input 
         type="text" 
         name="busquedaGit" 
-        placeholder="Enter topic here..." 
+        placeholder="¿Que quieres bucar?" 
         value={ this.state.busquedaGit }
         onChange={ this.handleChange } 
       />
       
-      <button value="Send" onClick={ this.publish }>Publish</button>
-    </div>
+      <button value="Send" onClick={ this.buscar }>Buscar</button>
+ <div id="tabla-resultados" dangerouslySetInnerHTML={{__html: this.state.Addhtml}}></div>
+       </div>
   }
 }
 
