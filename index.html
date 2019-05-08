@@ -8,10 +8,18 @@
     <!-- Load Babel Compiler -->
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.6/cjs/react-dom-server.browser.production.min.js"></script>-->
 </head>
 <body style="margin-top: 200px; text-align: center;">
     <div>
+        <noscript>
+      You need to enable JavaScript to run this app.
+</noscript>
         <div id="root"></div>
+         <div id="modal"></div> 
+
         <!--https://api.github.com/repos/microsoft/vscode/pulls/comments asi checamos los comentarios >_<-->
     <script type="text/babel">
     
@@ -54,7 +62,7 @@
         console.log(this.state.repos_array);
         let content = this.state.repos_array.map( repo=> { this.setState({ tr: this.state.tr+'<tr><td>'+repo.id+'</td><td>'+repo.name+'</td></tr>' })});
         console.log(content);
-            table.push(`<table>`);
+            table.push(`<table class="table"><tr><th>ID</th><th>Nombre</th></tr>`);
             table.push(this.state.tr);
             console.log(this.state.tr);
             table.push(`</table>`);
@@ -74,10 +82,12 @@
         value={ this.state.busquedaGit }
         onChange={ this.handleChange } 
       />
-      
-      <button value="Send" onClick={ this.buscar }>Buscar</button>
+      &nbsp;
+      <button class="btn btn-success" value="Send" onClick={ this.buscar }>Buscar</button>
  <div id="tabla-resultados" dangerouslySetInnerHTML={{__html: this.state.Addhtml}}></div>
        </div>
+
+
   }
 }
 
