@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hola!</title>
+    <title>Buscador de Repos</title>
     <script src= "https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src= "https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <!-- Load Babel Compiler -->
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body style="margin-top: 200px; text-align: center;">
     <div>
         <div id="root"></div>
+        <!--https://api.github.com/repos/microsoft/vscode/pulls/comments asi checamos los comentarios >_<-->
     <script type="text/babel">
     
     class App extends React.Component {
@@ -21,7 +21,8 @@
     this.state = {
       busquedaGit: null,
       repos_array : [],
-      Addhtml : null
+      Addhtml : null,
+      tr : ""
     };
     
     this.buscar = this.buscar.bind(this);
@@ -35,6 +36,11 @@
   }
 
   buscar() {
+                this.setState({
+             Addhtml: '',
+             repos_array:[],
+             tr : ""
+            });
     console.log( this.state.busquedaGit );
     axios.get('backend.php', {
     params: {
@@ -46,15 +52,15 @@
         this.setState({ repos_array:repos.items });
         let table  = [];
         console.log(this.state.repos_array);
-        let repos_table = this.state.repos_array.map( repo=> {return '<tr><td>'+repo.id+'</td><td>'+repo.name+'</td></tr>'});
-        console.log(repos_table);
-//table.push(`<table><tr>`);
-//              let content = this.state.repos.map(repo  => '<td>'+repo.id+'</td><td>'+repo.name+'</td>');
-  //            table.push(content);
-//table.push(`<tr></table>`);
-            //this.setState({
-             // Addhtml: table.join("")
-    //});
+        let content = this.state.repos_array.map( repo=> { this.setState({ tr: this.state.tr+'<tr><td>'+repo.id+'</td><td>'+repo.name+'</td></tr>' })});
+        console.log(content);
+            table.push(`<table>`);
+            table.push(this.state.tr);
+            console.log(this.state.tr);
+            table.push(`</table>`);
+            this.setState({
+             Addhtml: table.join("")
+            });
       })
   }
   
