@@ -15,18 +15,55 @@
         <div id="root"></div>
     <script type="text/babel">
     
-    class Buscar extends React.Component {
-    render() {
-        return <div><input type="text" name="q" id="q" />
-        <button onClick={this.getDataFromGithub} class="btn btn-success">Buscar</button>
-        <div id="cuadroDeBusqueda"></div>
-        </div>;
-    }
+    class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      busquedaGit: null,
+      persons: []
+    };
+    
+    this.publish = this.publish.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+  
+  handleChange({ target }) {
+    this.setState({
+      [target.name]: target.value
+    });
+  }
+  componentDidMount() {
+    axios.get(`https://jsonplaceholder.typicode.com/users`)
+      .then(res => {
+        const persons = res.data;
+        this.setState({ persons });
+      })
+  }
+
+  publish() {
+    console.log( this.state.busquedaGit );
+  }
+  
+  render() {
+    return <div>
+    <ul>
+        { this.state.persons.map(person => <li>{person.name}</li>)}
+      </ul>
+
+      <input 
+        type="text" 
+        name="busquedaGit" 
+        placeholder="Enter topic here..." 
+        value={ this.state.busquedaGit }
+        onChange={ this.handleChange } 
+      />
+      
+      <button value="Send" onClick={ this.publish }>Publish</button>
+    </div>
+  }
 }
-ReactDOM.render(
-    <Buscar />, 
-    document.getElementById("root")
-);
+
+ReactDOM.render(<App />, document.getElementById('root'));
     </script>
     </div>
 </body>
