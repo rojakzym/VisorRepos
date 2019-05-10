@@ -50,21 +50,41 @@ const modalRoot = document.getElementById('modal-root');
     super(props);
     this.state = {
       showModal: false,
-      busquedaGit: null,
+      busquedaGit: 'VisorRepos',
       repos_array : [],
-      Addhtml : null,
-      tr : ""
+      comments_array:[]
     };
     
     this.buscar = this.buscar.bind(this);
+        
+    this.onClick = this.onClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-    this.handleHide = this.handleHide.bind(this);
+      this.handleHide = this.handleHide.bind(this);
   }
-  handleShow() {
-    this.setState({showModal: true});
-  }
-  
+    onClick(param,e) {
+      console.log('Parameter', param);
+  console.log('Event', e);
+                this.setState({
+             comments_array:[]
+            });
+    axios.get('BackendController.php', {
+    params: {
+      q: param,
+      tipo: 'comments'
+    }
+  })
+      .then(res => {
+        let comments = res;
+        let arr = [];
+    Object.keys(comments).forEach(function(key) {
+      arr.push(comments['data']);
+    });
+    console.log(arr[0]);
+    this.setState({ comments_array:arr[0]});
+            });
+        this.setState({showModal: true});
+       }
+
   handleHide() {
     this.setState({showModal: false});
   }
@@ -76,11 +96,7 @@ const modalRoot = document.getElementById('modal-root');
   }
 
   buscar() {
-                this.setState({
-             Addhtml: '',
-             repos_array:[],
-             tr : ""
-            });
+    this.setState({repos_array:[]});
     console.log( this.state.busquedaGit );
     axios.get('BackendController.php', {
     params: {
@@ -89,29 +105,39 @@ const modalRoot = document.getElementById('modal-root');
     }
   })
       .then(res => {
-        const repos = res.data;
+        let repos = res.data;
         this.setState({ repos_array:repos.items });
-        let table  = [];
         console.log(this.state.repos_array);
-        let content = this.state.repos_array.map( repo=> { this.setState({ tr: this.state.tr+'<tr><td>'+repo.id+'</td><td>'+repo.name+'</td></tr>' })});
-        console.log(content);
-            table.push(`<table class="table"><tr><th>ID</th><th>Nombre</th></tr>`);
-            table.push(this.state.tr);
-            console.log(this.state.tr);
-            table.push(`</table>`);
-            this.setState({
-             Addhtml: table.join("")
-            });
-      })
-  }
-  
+        });
+}
+   
   render() {
     const modal = this.state.showModal && <Modal>
         <div className="modal">
           <div className="modal-square">
-            With a portal, we can render content into a different
-            part of the DOM, as if it were any other React child.
-            <button className="button-acept btn btn-success" onClick={this.handleHide}>Aceptar</button>
+            <div id="tabla-resultados">
+  
+  <table className="table">
+    <tr><th>Nombre</th><th>Contenido</th><th>Fecha Creacion</th><th>Fecha Actualizacion</th></tr>
+    {this.state.comments_array.map(coment=> 
+      <tr>
+        <td>
+          {coment.user.login}
+        </td>
+        <td>
+          {coment.body}
+        </td>
+        <td>
+          {coment.created_at}
+        </td>
+        <td>
+          {coment.updated_at}
+        </td>
+      </tr>)}
+  </table>
+  </div> 
+
+            <button className="button-acept btn" onClick={this.handleHide}>x</button>
           </div>
           
         </div>
@@ -128,8 +154,22 @@ const modalRoot = document.getElementById('modal-root');
         onChange={ this.handleChange } 
       />
       &nbsp;
-      <button class="btn btn-success" value="Send" onClick={ this.buscar }>Buscar</button>
- <div id="tabla-resultados" dangerouslySetInnerHTML={{__html: this.state.Addhtml}}></div>        <button onClick={this.handleShow}>Show modal</button>
+      <button className="btn btn-success" value="Send" onClick={ this.buscar }>Buscar</button>
+ <div id="tabla-resultados">
+  
+  <table className="table">
+    <tr><th>ID</th><th>Nombre</th></tr>
+    {this.state.repos_array.map(repo=> 
+      <tr>
+        <td className="clickComments" onClick={this.onClick.bind(this,repo.full_name)} >
+          {repo.full_name}
+        </td>
+        <td className="clickComments" onClick={this.onClick.bind(this,repo.full_name)}>
+          {repo.name}
+        </td>
+      </tr>)}
+  </table>
+  </div>        
         {modal}
        </div>
 
@@ -140,7 +180,9 @@ const modalRoot = document.getElementById('modal-root');
 ReactDOM.render(<App />,appRoot);
     </script>
     </div>
-    <style>#modal-root {
+    <style>
+    
+    #modal-root {
       position: relative;
       z-index: 999;
     }
@@ -162,16 +204,21 @@ ReactDOM.render(<App />,appRoot);
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
     .modal-square{
       background: white;
-    width: 53%;
-    height: 195px;
+      width: 80%;
+      height: 100%;
 }
 .button-acept{
   position: absolute;
-    bottom: 18px;
-    left: 47%;
+  top: 0%;
+  left: 87%;
+  color:black;
+}
+.clickComments{
+  cursor:pointer;
 }
     </style>
 </body>

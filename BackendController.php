@@ -21,9 +21,9 @@ $insert =ModelController::save($_REQUEST['q'],$selectHost->dataConnection());
 header("Accept: application/vnd.github.mercy-preview+json");
 $search = new BackendController();
 if($_REQUEST["tipo"]=='repo'){
-echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q'].'+in:'.$_REQUEST['q'].'');
+echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q']);
 }
 if($_REQUEST["tipo"]=='comments'){
-echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['owner'].'/'.$_REQUEST['repoNombre'].'/pulls/comments');
+echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['q'].'/pulls/comments?q=sort:created+direction:desc');
 }
 ?>
