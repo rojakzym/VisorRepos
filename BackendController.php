@@ -25,7 +25,7 @@ include_once "ModelController.php";
     echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q'].'+in:'.$_REQUEST['q'].'');
     }
     if($_REQUEST["tipo"]=='comments'){
-    echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['owner'].'/'.$_REQUEST['repoNombre'].'/pulls/comments');
+    echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['q'].'/pulls/comments');
 }
 
 ?>
