@@ -17,13 +17,19 @@ $selectHost = new BdController();
 $conexion = BdController::conn($selectHost->dataConnection());
 include_once "ModelController.php";
 
-$insert =ModelController::save($_REQUEST['q'],$selectHost->dataConnection());
-header("Accept: application/vnd.github.mercy-preview+json");
-$search = new BackendController();
-if($_REQUEST["tipo"]=='repo'){
-echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q']);
+if(!empty($_REQUEST['q'])){
+    $insert =ModelController::save($_REQUEST['q'],$selectHost->dataConnection());
+    header("Accept: application/vnd.github.mercy-preview+json");
+    $search = new BackendController();
+    if($_REQUEST["tipo"]=='repo'){
+    echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q'].'+in:'.$_REQUEST['q'].'');
+    }
+    if($_REQUEST["tipo"]=='comments'){
+    echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['owner'].'/'.$_REQUEST['repoNombre'].'/pulls/comments');
+    }else{
+        exit();
+    }
+
 }
-if($_REQUEST["tipo"]=='comments'){
-echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['q'].'/pulls/comments?q=sort:created+direction:desc');
-}
+
 ?>
