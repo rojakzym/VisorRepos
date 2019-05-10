@@ -82,9 +82,10 @@ const modalRoot = document.getElementById('modal-root');
              tr : ""
             });
     console.log( this.state.busquedaGit );
-    axios.get('backend.php', {
+    axios.get('BackendController.php', {
     params: {
-      q: this.state.busquedaGit
+      q: this.state.busquedaGit,
+      tipo: 'repo'
     }
   })
       .then(res => {

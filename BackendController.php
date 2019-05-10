@@ -1,6 +1,6 @@
 <?php
-class Backend{
-    public function httpGet($url){
+class BackendController{
+   public function httpGet($url){
     $curl = curl_init();
     curl_setopt_array($curl, [
         CURLOPT_RETURNTRANSFER => 1,
@@ -12,12 +12,18 @@ class Backend{
         return $resp;
     }
 }
+include_once "Bdcontroller.php";
+$selectHost = new BdController();
+$conexion = BdController::conn($selectHost->dataConnection());
+include_once "ModelController.php";
+
+$insert =ModelController::save($_REQUEST['q'],$selectHost->dataConnection());
 header("Accept: application/vnd.github.mercy-preview+json");
-$search = new Backend();
-if(isset($_REQUEST["q"])){
+$search = new BackendController();
+if($_REQUEST["tipo"]=='repo'){
 echo  $search->httpGet('https://api.github.com/search/repositories?q='.$_REQUEST['q'].'+in:'.$_REQUEST['q'].'');
 }
-if(isset($_REQUEST["owner"]) && isset($_REQUEST["repoNombre"])){
+if($_REQUEST["tipo"]=='comments'){
 echo  $search->httpGet('https://api.github.com/repos/'.$_REQUEST['owner'].'/'.$_REQUEST['repoNombre'].'/pulls/comments');
 }
 ?>
